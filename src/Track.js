@@ -20,12 +20,12 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 class Track extends Component {
 
   getBaggageDetails = () => {
-    axios.get("/baggage/getDetails", {
-      params: {
-
-      }
+    axios.post("/baggage/getDetails", {
+      
+        booking_id: this.state.coupon
+      
     }).then(response => {
-
+        this.setState({baggagesInfoList: response.data.details})
     }).catch(err => {
 
     })
@@ -91,7 +91,7 @@ state = {
                 </Form.Group>
 
               <Form.Group as={Col} style={{marginRight: 20}}>
-              <Button variant="outline-success" style={{marginTop: 30}}>Search</Button>
+              <Button variant="outline-success" style={{marginTop: 30}} onClick={this.getBaggageDetails}>Search</Button>
               </Form.Group>
 
             </Form>
@@ -109,7 +109,7 @@ state = {
                   flightName = {value.flight_name}
                   weight = {value.weight}
                   noOfItems = {value.no_of_items}
-                  updatedAt = {value.updated_at}
+                  updatedAt = {value.created_at}
                   status = {value.status}
                   progress = {value.progress}
                 />

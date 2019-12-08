@@ -21,10 +21,10 @@ class Transactions extends Component {
   getBookingDetails = () => {
     axios.get("/booking/get", {
       params: {
-
+        phoneNo: this.state.phone
       }
     }).then(response => {
-
+        this.setState({bookingsInfoList: response.data.transactions});
     }).catch(err => {
 
     })
@@ -48,6 +48,7 @@ state = {
     type: "direct",
     coupon: "",
     showData: true,
+    phone: "",
     bookingsInfoList: [
       {
         date : '2019-12-10',
@@ -71,7 +72,7 @@ state = {
   }
 
   onIdChange = (e) => {
-    this.setState({coupon: e.target.value});
+    this.setState({phone: e.target.value});
   }
 
   render() {
@@ -85,12 +86,12 @@ state = {
 
               <Form.Group as={Col} style={{marginRight: 20, marginLeft: 20}}>
                 <Form.Label>Phone Number</Form.Label>
-                  <Form.Control value={this.state.coupon} onChange={e => this.onIdChange(e)}>
+                  <Form.Control value={this.state.phone} onChange={e => this.onIdChange(e)}>
                   </Form.Control>
                 </Form.Group>
 
               <Form.Group as={Col} style={{marginRight: 20}}>
-              <Button variant="outline-success" style={{marginTop: 30}}>Search</Button>
+              <Button variant="outline-success" style={{marginTop: 30}} onClick={this.getBookingDetails}>Search</Button>
               </Form.Group>
 
             </Form>

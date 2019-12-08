@@ -18,7 +18,7 @@ import { ToastsContainer, ToastsStore } from 'react-toasts';
 class Home extends Component {
 
   getCities = () => {
-    axios.get("/cities", {
+    axios.get("/locations", {
       params: {
       }
     }).then(response => {
@@ -46,6 +46,7 @@ class Home extends Component {
     type: "direct",
     coupon: "",
     showData: false,
+
     flightsInfoList: [
       {
         start_time: '20:00',
@@ -90,19 +91,19 @@ class Home extends Component {
   }
 
   getFlights = () => {
-    var connecting = this.state.type === "withstops"
-    axios.get("/flights", {
-      params: {
-        "date": this.state.date,
+    var connecting = this.state.type === "withstop"
+    axios.post("/flights/get", {
+      
+        "departure_date": this.state.date,
         "source": this.state.source,
         "destination": this.state.destination,
         "connecting": connecting,
-        "no_of_people": this.state.noOfPeople,
+        "no_of_people": this.state.people,
         "coupon": this.state.coupon
-      }
+      
     }).then(response => {
       if(response != undefined) {
-        this.setState({flightsInfoList: response.data.data.source_to_dest})
+        this.setState({flightsInfoList: response.data.source_to_destination})
         this.setState({showData: true})
       }
     }).catch(err => {
@@ -254,7 +255,10 @@ class Home extends Component {
                   source = {this.state.source}
                   destination = {this.state.destination}
                   flightDetails = {value.flight_details}
-                  flightIds = {value.flight_ids}
+                  flightIds = {value.flight_ids.split(",")}
+                  noOfPeople = {this.state.people}
+                  date = {this.state.date}
+                  stop = {value.stop}
                 />
               )
             })

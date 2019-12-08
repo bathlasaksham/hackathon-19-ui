@@ -40,12 +40,15 @@ class FlightInfo extends Component {
             return;
         }
         axios.post("/booking/create", {
-            flightIds: this.props.flightIds,
+            flight_ids: this.props.flightIds,
             date: this.props.date,
-            phoneNo: this.state.phone,
-            emailId: this.state.email,
+            phone_no: this.state.phone,
+            email_id: this.state.email,
             name: this.state.name,
-            noOfPeople: this.props.noOfPeople
+            no_of_people: this.props.noOfPeople,
+            source: this.props.source,
+            destination: this.props.destination,
+            price: this.props.finalPrice
         }).then(res => {
             if(res != undefined) {
                 if(res.data.success == true) {
