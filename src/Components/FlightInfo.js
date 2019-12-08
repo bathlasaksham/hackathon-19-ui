@@ -13,23 +13,23 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 class FlightInfo extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="App" style={{marginBottom: 5}}>
         <Card>
             <Row>
-                <Col>
-                    {this.props.startTime} <br /> Delhi
+                <Col><br />
+                    {this.props.startTime} <br /> Delhi<br />
+                </Col>
+                <Col><br />
+                    {this.props.duration}<br />
+                </Col>
+                <Col><br />
+                    {this.props.endTime}<br /> Goa<br />
+                </Col>
+                <Col><br />
+                    {this.props.finalPrice}<br />
                 </Col>
                 <Col>
-                    {this.props.duration}
-                </Col>
-                <Col>
-                    {this.props.endTime}<br /> Goa
-                </Col>
-                <Col>
-                    {this.props.finalPrice}
-                </Col>
-                <Col>
-                    <br /><Button>Book Now</Button><br />
+                    <br /><Button>Book Now</Button><br /><br />
                 </Col>
             </Row>
             <Row>

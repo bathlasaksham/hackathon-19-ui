@@ -15,6 +15,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import FlightInfo from './Components/FlightInfo';
 import { Card } from '@material-ui/core';
+import Row from 'react-bootstrap/Row';
 
 // import Radio from 'Radio';
 // import Input from 'react-bootstrap/Input';
@@ -173,9 +174,33 @@ class Home extends Component {
               </Form.Row>
             </Form>
           </Navbar.Collapse>
-        </Navbar>
+        </Navbar> <br />
 
-        <Card>
+        <Card style={{padding: 10}}>
+
+        <Card style={{padding: 20}}>
+          <Row>
+            <Col>
+                Departure
+            </Col>
+            <Col>
+                Duration
+            </Col>
+            <Col>
+                Arrival
+            </Col>
+            <Col>
+                Price
+            </Col>
+            <Col>
+                
+            </Col>
+          </Row>
+        </Card>
+
+        <br />
+
+        
         {
           this.state.showData?
           (
