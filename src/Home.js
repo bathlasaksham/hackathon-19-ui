@@ -5,33 +5,26 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import axios from 'axios';
-import InputGroup from 'react-bootstrap/InputGroup'
-import FormControl from 'react-bootstrap/FormControl'
 import 'react-daypicker/lib/DayPicker.css';
-import DayPicker from 'react-daypicker';
-import DatePicker from "react-datepicker";
 import TextField from '@material-ui/core/TextField';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import FlightInfo from './Components/FlightInfo';
 import { Card } from '@material-ui/core';
 import Row from 'react-bootstrap/Row';
-
-// import Radio from 'Radio';
-// import Input from 'react-bootstrap/Input';
-// var DatePicker = require("react-bootstrap-date-picker");
+// import CircularProgress from '@material-ui/core/CircularProgress';
+import { ToastsContainer, ToastsStore } from 'react-toasts';
 
 class Home extends Component {
 
   getCities = () => {
     axios.get("/cities", {
       params: {
-
       }
     }).then(response => {
-
+      this.setState({cities: response.data});
     }).catch(err => {
-
+      ToastsStore.error("Something went wrong while fetching cities !!");
     })
   }
 
@@ -45,32 +38,76 @@ class Home extends Component {
   }
 
   state = {
-    source: "",
-    destination: "",
+    source: "Delhi",
+    destination: "Bangalore",
     date: this.getDateString(new Date()),
-    cities: ['India', 'Aus'],
+    cities: ['Delhi', 'Bangalore', 'Goa'],
     people: 1,
     type: "direct",
     coupon: "",
-    showData: true,
+    showData: false,
     flightsInfoList: [
       {
         start_time: '20:00',
         end_time: '23:00',
         duration: "20 mins",
-        price: {
-          final: '2000'
-        },
+        price: 2000,
+        flight_details: [
+          {
+            flight_id: "124",
+            source: "Delhi",
+            destination: "Bangalore",
+            start_time: "20:00",
+            end_time: "23:00",
+            duration: "1 hr"
+          },
+          {
+            flight_id: "124",
+            source: "Bangalore",
+            destination: "Goa",
+            start_time: "20:00",
+            end_time: "23:50",
+            duration: "1 hr 50 mins"
+          }
+        ]
       },
       {
         start_time: '20:00',
         end_time: '23:00',
         duration: "20 mins",
-        price: {
-          final: '2000'
-        },
+        price: 2000,
+        flight_details: [
+          {
+            flight_id: "124",
+            source: "Delhi",
+            destination: "Goa",
+            start_time: "20:00",
+            end_time: "23:20" 
+          }
+        ]
       }
     ],
+  }
+
+  getFlights = () => {
+    var connecting = this.state.type === "withstops"
+    axios.get("/flights", {
+      params: {
+        "date": this.state.date,
+        "source": this.state.source,
+        "destination": this.state.destination,
+        "connecting": connecting,
+        "no_of_people": this.state.noOfPeople,
+        "coupon": this.state.coupon
+      }
+    }).then(response => {
+      if(response != undefined) {
+        this.setState({flightsInfoList: response.data.data.source_to_dest})
+        this.setState({showData: true})
+      }
+    }).catch(err => {
+      ToastsStore.error("Something went wrong while fetching data !!");
+    })
   }
 
   onSourceChange = (e) => {
@@ -78,7 +115,7 @@ class Home extends Component {
   }
 
   onDestinationChange = (e) => {
-    this.setState({source: e.target.value});
+    this.setState({destination: e.target.value});
   }
 
   onDateChange = (date) => {
@@ -105,9 +142,9 @@ class Home extends Component {
           <Navbar.Collapse id="basic-navbar-nav">
             <Form >
             <Form.Row>
-                <Form.Group as={Col} style={{marginRight: 20}}>
+                <Form.Group as={Col} style={{marginRight: 40}}>
                 <Form.Label>Source</Form.Label>
-                  <Form.Control as="select" onChange={e => this.onSourceChange(e)}>
+                  <Form.Control as="select" onChange={e => this.onSourceChange(e)} value = {this.state.source}>
                   {
                       Array.from(this.state.cities).map((value) => {
                         return (
@@ -118,9 +155,9 @@ class Home extends Component {
                   </Form.Control>
                 </Form.Group>
 
-                <Form.Group as={Col} style={{marginRight: 20}}>
+                <Form.Group as={Col} style={{marginRight: 40}}>
                 <Form.Label>Destination</Form.Label>
-                  <Form.Control as="select" onChange={e => this.onDestinationChange(e)}>
+                  <Form.Control as="select" onChange={e => this.onDestinationChange(e)} value = {this.state.destination}>
                     {
                       Array.from(this.state.cities).map((value) => {
                         return (
@@ -131,7 +168,7 @@ class Home extends Component {
                   </Form.Control>
                 </Form.Group>
 
-                <Form.Group as={Col} style={{marginRight: 20}}>
+                <Form.Group as={Col} style={{marginRight: 40}}>
                   <Form.Label>Date</Form.Label>
                   <TextField
                         id="start_date"
@@ -148,7 +185,7 @@ class Home extends Component {
 
                 <Form.Row> */}
 
-                <Form.Group as={Col} style={{marginRight: 20}}>
+                <Form.Group as={Col} style={{marginRight: 40}}>
                 <Form.Label>No. Of People</Form.Label>
                   <Form.Control value={this.state.people} onChange={e => this.onPeopleChange(e)}>
                   </Form.Control>
@@ -161,20 +198,23 @@ class Home extends Component {
                 </form>
               </Form.Group>
 
-              <Form.Group as={Col} style={{marginRight: 20, marginLeft: 20}}>
+              {/* <Form.Group as={Col} style={{marginRight: 20, marginLeft: 20}}>
                 <Form.Label>Coupon</Form.Label>
                   <Form.Control value={this.state.coupon} onChange={e => this.onCouponChange(e)}>
                   </Form.Control>
-                </Form.Group>
+              </Form.Group> */}
 
-              <Form.Group as={Col} style={{marginRight: 20}}>
-              <Button variant="outline-success" style={{marginTop: 30}}>Search</Button>
+              <Form.Group as={Col} style={{marginRight: 40}}>
+              <Button variant="outline-success" style={{marginTop: 30}} onClick={this.getFlights}>Search</Button>
               </Form.Group>
 
               </Form.Row>
             </Form>
           </Navbar.Collapse>
         </Navbar> <br />
+
+        {
+          this.state.showData?
 
         <Card style={{padding: 10}}>
 
@@ -210,14 +250,20 @@ class Home extends Component {
                   startTime = {value.start_time}
                   endTime = {value.end_time}
                   duration = {value.duration}
-                  finalPrice = {value.price.final}
+                  finalPrice = {value.price}
+                  source = {this.state.source}
+                  destination = {this.state.destination}
+                  flightDetails = {value.flight_details}
+                  flightIds = {value.flight_ids}
                 />
               )
             })
           ) :
           null
         }
-        </Card>
+        </Card>: null
+      }
+
 
         </Container>
       </div>
